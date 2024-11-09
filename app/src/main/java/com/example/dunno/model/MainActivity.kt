@@ -1,4 +1,4 @@
-package com.example.dunno
+package com.example.dunno.model
 
 import android.content.Intent
 import android.os.Bundle
