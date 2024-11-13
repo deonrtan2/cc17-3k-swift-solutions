@@ -18,7 +18,6 @@ class SecondActLogIn : AppCompatActivity() {
         // Initialize FirebaseAuth
         auth = FirebaseAuth.getInstance()
 
-        // Inflate the binding
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
@@ -27,17 +26,14 @@ class SecondActLogIn : AppCompatActivity() {
     }
 
     private fun setupButtonListeners() {
-        // Button to go back to MainActivity
         binding.button3.setOnClickListener {
-            finish() // This will close SecondActivity and go back to MainActivity
+            finish()
         }
 
-        // Button for Log In action
         binding.button4.setOnClickListener {
             val username = binding.UserName.text.toString()
             val password = binding.Password.text.toString()
 
-            // Ensure that both fields are filled
             if (username.isEmpty() || password.isEmpty()) {
                 Toast.makeText(this, "Please fill in both fields", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
