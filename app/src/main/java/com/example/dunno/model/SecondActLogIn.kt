@@ -2,18 +2,24 @@ package com.example.dunno.model
 
 import android.content.Intent
 import android.os.Bundle
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.example.dunno.databinding.ActivityMain2Binding
+import com.example.dunno.databinding.ActivityLoginBinding
+import com.google.firebase.auth.FirebaseAuth
 
 class SecondActLogIn : AppCompatActivity() {
 
-    private lateinit var binding: ActivityMain2Binding
+    private lateinit var binding: ActivityLoginBinding
+    private lateinit var auth: FirebaseAuth
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        // Initialize FirebaseAuth
+        auth = FirebaseAuth.getInstance()
+
         // Inflate the binding
-        binding = ActivityMain2Binding.inflate(layoutInflater)
+        binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         // Set up button click listeners
@@ -28,10 +34,37 @@ class SecondActLogIn : AppCompatActivity() {
 
         // Button for Log In action
         binding.button4.setOnClickListener {
-            // You can handle the log in action here or navigate to another activity
-            // For example, you could start another activity like this:
-            val intent = Intent(this, SecondActSignUp::class.java)
-            startActivity(intent)
+            val username = binding.UserName.text.toString()
+            val password = binding.Password.text.toString()
+
+            // Ensure that both fields are filled
+            if (username.isEmpty() || password.isEmpty()) {
+                Toast.makeText(this, "Please fill in both fields", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
+            // Call Firebase Log In method
+            logInUser(username, password)
         }
+    }
+
+    private fun logInUser(username: String, password: String) {
+        auth.signInWithEmailAndPassword(username, password)
+            .addOnCompleteListener(this) { task ->
+                if (task.isSuccessful) {
+                    // Log in successful
+                    Toast.makeText(this, "Log In Successful", Toast.LENGTH_SHORT).show()
+
+                    // Redirect to HomeActivity
+                    val intent = Intent(this, HomeActivity::class.java)
+                    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                    startActivity(intent)
+                    finish()  // Close the login activity
+
+                } else {
+                    // If log-in fails
+                    Toast.makeText(this, "Log In Failed: ${task.exception?.message}", Toast.LENGTH_LONG).show()
+                }
+            }
     }
 }
